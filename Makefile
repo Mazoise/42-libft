@@ -5,82 +5,72 @@
 #                                                     +:+ +:+         +:+      #
 #    By: mchardin <mchardin@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2020/04/23 10:00:28 by mchardin          #+#    #+#              #
-#    Updated: 2020/04/23 10:05:02 by mchardin         ###   ########.fr        #
+#    Created: 2020/04/23 10:00:49 by mchardin          #+#    #+#              #
+#    Updated: 2020/04/23 10:00:50 by mchardin         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-PREFIX		=	./srcs/
+PREF_CONV	= ./conv/
 
-INCLUDES	=	./includes/
+PREF_GNL	= ./gnl/
 
-INCLUDES_L	=	./libft/includes/
+PREF_IS		= ./is/
 
-INCL_FILES	=	$(addprefix $(INCLUDES), minishell.h)
+PREF_LST	= ./lst/
 
-SRCS		=	$(addprefix $(PREFIX), \
-								ft_minishell.c \
-								ft_init.c \
-								ft_init_env.c \
-								ft_is_var.c \
-								ft_builtins.c \
-								ft_builtins_utils.c \
-								ft_env_utils.c \
-								ft_arg_interpretation.c \
-								ft_arg_interpretation_utils.c \
-								ft_arg_translation.c \
-								ft_arg_translation_utils.c \
-								ft_arg_dquote.c \
-								ft_arg_unquote.c \
-								ft_cursor_utils.c \
-								ft_echo.c \
-								ft_executable.c \
-								ft_executable_utils.c \
-								ft_path.c \
-								ft_exit.c \
-								ft_pipes_n_signals.c \
-								ft_free_close.c \
-								ft_find_env.c \
-								ft_arg_dollar.c \
-								ft_command.c \
-								ft_main_loop.c \
-								ft_check_arg.c)
+PREF_MEM	= ./mem/
 
-OBJS		=	${SRCS:.c=.o}
+PREF_PRINTF	= ./printf/
 
-CC			=	clang
+PREF_PUT	= ./put/
 
-CFLAGS		=	-Werror -Wextra -Wall -I ${INCLUDES} -I ${INCLUDES_L}
+PREF_STR	= ./str/
 
-NAME 		=	minishell
+PREF_INCL	= ./includes/
 
-RM			=	rm -f
+INCL_FILES	= $(addprefix ${PREF_INCL}, ft_printf.h get_next_line.h libft_structs.h libft.h new_lib.h)
 
-DIR_LIBFT	=	libft
+SRCS_CONV	= $(addprefix ${PREF_CONV}, ft_atoi.c ft_tolower.c ft_toupper.c ft_itoa.c)
 
-LIBFT_FLAGS	=	-L./${DIR_LIBFT}/ -lft
+SRCS_GNL	= $(addprefix ${PREF_GNL}, get_next_line.c get_next_line_utils.c)
 
-all:		makelib
-			${MAKE} ${NAME}
+SRCS_IS		= $(addprefix ${PREF_IS}, ft_isalnum.c ft_isalpha.c ft_isascii.c ft_isprint.c ft_isdigit.c ft_iswhitespace.c)
 
-${NAME}:	${OBJS} ${INCL_FILES} ./${DIR_LIBFT}/libft.a
-			${CC} ${CFLAGS} ${OBJS} ${LIBFT_FLAGS} -o ${NAME}
+SRCS_LST	= $(addprefix ${PREF_LST}, ft_lstdelone.c ft_lstadd_back.c ft_lstnew.c ft_lstsize.c ft_lstlast.c ft_lstmap.c ft_lstiter.c ft_lstclear.c ft_lstadd_front.c)
 
-run:		all
-			./$(NAME)
+SRCS_MEM	= $(addprefix ${PREF_MEM}, ft_freez.c ft_memccpy.c ft_bzero.c ft_memchr.c ft_calloc.c ft_memcmp.c ft_memcpy.c ft_memmove.c ft_memset.c)
 
-makelib:
-			${MAKE} -C ${DIR_LIBFT}
+SRCS_PRINTF	= $(addprefix ${PREF_PRINTF}, ft_fprintf.c ft_printf.c ft_printf_addflags.c ft_printf_utils.c ft_printf_nb_format.c ft_printf_conversion.c ft_printf_print.c)
+
+SRCS_PUT	= $(addprefix ${PREF_PUT}, ft_putchar_fd.c ft_putendl_fd.c ft_putnbr_fd.c ft_putstr_fd.c)
+
+SRCS_STR	= $(addprefix ${PREF_STR}, ft_strs_add_end.c ft_strndup.c ft_strs_cpy.c ft_strslen.c ft_free_strs.c ft_strs_plus_one.c ft_strdup_nosp.c ft_strncmp.c ft_split.c ft_strnstr.c ft_strchr.c ft_strrchr.c ft_strdup.c ft_strtrim.c ft_strjoin.c ft_substr.c ft_strlcat.c ft_strlcpy.c ft_strmapi.c ft_strlen.c)
+
+ALL_SRCS	= $(SRCS_CONV) $(SRCS_GNL) $(SRCS_IS) $(SRCS_LST) $(SRCS_MEM) $(SRCS_PRINTF) $(SRCS_PUT) $(SRCS_STR)
+
+OBJS		= ${ALL_SRCS:.c=.o}
+
+NAME		= libft.a
+
+CC			= clang
+
+CFLAGS		= -Wall -Wextra -Werror -I ${PREF_INCL}
+
+RM			= rm -f
+
+AR			= ar rc
+
+$(NAME):	${OBJS} ${INCL_FILES}
+			${AR} ${NAME} ${OBJS}
+
+all:		${NAME}
 
 clean:
 			${RM} ${OBJS}
-			${MAKE} -C ${DIR_LIBFT} clean
 
-fclean:
-			${RM} ${OBJS}
+fclean:		clean
 			${RM} ${NAME}
-			${MAKE} -C ${DIR_LIBFT} fclean
 
 re:			fclean all
 
-.PHONY: 	all re run makelib clean fclean
+.PHONY:		all clean fclean re
